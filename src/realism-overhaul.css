@@ -1201,3 +1201,74 @@ button.active,button.selected,button[aria-pressed="true"],.mode-choice-card.acti
     pointer-events: auto;
   }
 }
+
+
+/* Desktop Research Lab: open upgrades as a dedicated view, with a clear way back. */
+@media (min-width: 851px) {
+  .start-screen-content .research-lab-entry-button {
+    display: flex !important;
+    width: min(100%, 760px) !important;
+    margin: clamp(28px, 5vh, 52px) auto 0 !important;
+    cursor: pointer !important;
+  }
+
+  .start-screen-content .research-lab-panel.mobile-research-collapsed {
+    display: none !important;
+  }
+
+  .start-screen-content .research-lab-panel.mobile-research-expanded {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+
+  .start-screen-content:has(> .research-lab-panel.mobile-research-expanded) {
+    box-sizing: border-box !important;
+    width: min(100%, 1440px) !important;
+    max-width: 1440px !important;
+    min-height: 100dvh !important;
+    margin: 0 auto !important;
+    padding: clamp(24px, 4vh, 48px) clamp(24px, 5vw, 72px) clamp(48px, 7vh, 84px) !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+  }
+
+  .start-screen-content:has(> .research-lab-panel.mobile-research-expanded) > :not(.start-screen-brand):not(.research-lab-panel) {
+    display: none !important;
+  }
+
+  .start-screen-content:has(> .research-lab-panel.mobile-research-expanded) .start-screen-brand {
+    margin-bottom: clamp(20px, 3vh, 36px) !important;
+  }
+
+  .start-screen-content .research-lab-panel .research-lab-mobile-toggle {
+    display: inline-flex !important;
+    position: relative !important;
+    z-index: 3 !important;
+    margin: 18px 0 28px !important;
+    cursor: pointer !important;
+  }
+
+  .start-screen-content .research-lab-panel.mobile-research-expanded .research-lab-copy,
+  .start-screen-content .research-lab-panel.mobile-research-expanded .research-milestone-grid,
+  .start-screen-content .research-lab-panel.mobile-research-expanded .research-lab-foot,
+  .start-screen-content .research-lab-panel.mobile-research-expanded .garage-perk-grid {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .start-screen-content .research-lab-panel.mobile-research-expanded .research-milestone-grid,
+  .start-screen-content .research-lab-panel.mobile-research-expanded .garage-perk-grid {
+    display: grid !important;
+  }
+
+  .start-screen-content .research-lab-panel.mobile-research-expanded .research-lab-foot {
+    display: flex !important;
+  }
+}
