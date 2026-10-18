@@ -1392,3 +1392,35 @@ button.active,button.selected,button[aria-pressed="true"],.mode-choice-card.acti
   }
 }
 
+/* Force exact outer dimensions to match the Start New Game button on desktop. */
+@media (min-width: 851px) {
+  .start-screen-content > .research-lab-entry-button,
+  .start-screen-content .start-menu-actions > .start-new-game-button {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 620px !important;
+    min-height: 48px !important;
+    height: 48px !important;
+  }
+
+  .start-screen-content > .research-lab-entry-button {
+    align-self: center !important;
+    margin: clamp(28px, 6vh, 64px) auto 0 !important;
+    padding: 0 16px 0 20px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    align-items: center !important;
+    column-gap: 14px !important;
+  }
+
+  .start-screen-content .start-menu-actions {
+    width: min(100%, 620px) !important;
+  }
+
+  .start-screen-content > .research-lab-entry-button .research-entry-balance {
+    min-height: 24px !important;
+    padding: 0 8px !important;
+    font-size: 9px !important;
+  }
+}
+
