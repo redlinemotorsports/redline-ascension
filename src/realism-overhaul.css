@@ -1156,3 +1156,48 @@ button.active,button.selected,button[aria-pressed="true"],.mode-choice-card.acti
     margin-top: clamp(34px, 6vh, 64px) !important;
   }
 }
+
+
+/* Desktop Research Lab fix: reveal all research controls and let the full screen scroll naturally. */
+@media (min-width: 851px) {
+  .start-screen {
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+  }
+  .start-screen-content {
+    flex: 0 0 auto !important;
+    justify-content: flex-start !important;
+    min-height: 100dvh !important;
+  }
+  .start-screen-content .research-lab-panel {
+    display: block !important;
+    position: relative !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    contain: none !important;
+  }
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .research-lab-copy,
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .research-milestone-grid,
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .research-lab-foot,
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .garage-perk-grid {
+    display: block !important;
+  }
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .research-milestone-grid,
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .garage-perk-grid {
+    display: grid !important;
+  }
+  .start-screen-content .research-lab-panel.mobile-research-collapsed > .research-lab-foot {
+    display: flex !important;
+  }
+  .start-screen-content .research-lab-panel .research-lab-mobile-toggle {
+    display: none !important;
+  }
+  .start-screen-content .research-lab-panel .garage-perk-card button {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+  }
+}
