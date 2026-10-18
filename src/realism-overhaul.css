@@ -1081,3 +1081,78 @@ button.active,button.selected,button[aria-pressed="true"],.mode-choice-card.acti
     margin-top: clamp(28px, 5vh, 48px) !important;
   }
 }
+
+
+/* Desktop landing screen: full-viewport, typography-led menu with all decorative artwork removed. */
+@media (min-width: 851px) {
+  .start-screen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: radial-gradient(ellipse at 50% 0%, rgba(92, 108, 127, .13), transparent 55%), linear-gradient(135deg, #080a0e 0%, #11151c 52%, #080a0e 100%) !important;
+  }
+  .start-screen > .start-screen-grid,
+  .start-screen > .start-screen-visual,
+  .start-screen > .start-screen-engineering-visual {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  .start-screen-content {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 1120px !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: clamp(48px, 8vh, 100px) clamp(48px, 9vw, 150px) !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .start-screen:has(.start-screen-content[data-onboarding-step="home"]) .start-screen-content {
+    width: 100% !important;
+    max-width: 1120px !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    padding-top: clamp(48px, 8vh, 100px) !important;
+    padding-bottom: clamp(48px, 8vh, 100px) !important;
+  }
+  .start-screen:has(.start-screen-content[data-onboarding-step="home"]) .start-screen-brand {
+    margin-bottom: clamp(28px, 5vh, 54px) !important;
+  }
+  .start-screen:has(.start-screen-content[data-onboarding-step="home"]) .start-screen-content h1 {
+    max-width: 1000px !important;
+    font-size: clamp(64px, 8vw, 116px) !important;
+    line-height: .9 !important;
+    letter-spacing: -.055em !important;
+  }
+  .start-screen:has(.start-screen-content[data-onboarding-step="home"]) .start-screen-intro {
+    max-width: 700px !important;
+    font-size: 13px !important;
+    line-height: 1.9 !important;
+  }
+  .start-screen:has(.start-screen-content[data-onboarding-step="home"]) .start-menu-actions {
+    width: min(100%, 620px) !important;
+    margin-top: clamp(34px, 6vh, 64px) !important;
+  }
+}
