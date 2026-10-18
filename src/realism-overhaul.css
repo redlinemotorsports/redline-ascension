@@ -1331,3 +1331,64 @@ button.active,button.selected,button[aria-pressed="true"],.mode-choice-card.acti
     opacity: .82;
   }
 }
+
+/* Final desktop polish: keep the Research Lab action on the same grid as Start New Game. */
+@media (min-width: 851px) {
+  .start-screen-content .research-lab-entry-button {
+    box-sizing: border-box !important;
+    width: min(100%, 620px) !important;
+    min-height: 56px !important;
+    margin: clamp(28px, 6vh, 64px) auto 0 !important;
+    padding: 12px 16px 12px 20px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    align-items: center !important;
+    column-gap: 14px !important;
+    text-align: left !important;
+  }
+
+  .start-screen-content .research-lab-entry-button .research-entry-label {
+    display: block !important;
+    min-width: 0 !important;
+    flex: initial !important;
+    font: inherit !important;
+    font-weight: 800 !important;
+    letter-spacing: inherit !important;
+    line-height: 1.15 !important;
+  }
+
+  .start-screen-content .research-lab-entry-button .research-entry-balance {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 28px !important;
+    box-sizing: border-box !important;
+    padding: 0 10px !important;
+    border: 1px solid rgba(255, 255, 255, .18) !important;
+    border-radius: 3px !important;
+    background: rgba(7, 10, 15, .28) !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    letter-spacing: .07em !important;
+    white-space: nowrap !important;
+    opacity: .92 !important;
+  }
+
+  .start-screen-content .research-lab-entry-button .research-entry-arrow {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    margin: 0 !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .start-screen-content .research-lab-entry-button .research-entry-balance {
+    white-space: nowrap;
+  }
+}
+
