@@ -834,6 +834,138 @@ function EngineeringCodex({ meta, onMetaChange, modules, installedUpgrades, acti
   </div>;
 }
 
+function RacingBgmControl() {
+  const audioRef = useRef<AudioContext | null>(null);
+  const masterRef = useRef<GainNode | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const stepRef = useRef(0);
+  const [muted, setMuted] = useState(true);
+  const [available, setAvailable] = useState(true);
+
+  useEffect(() => {
+    let context: AudioContext | null = null;
+    let master: GainNode | null = null;
+    let timer: number | null = null;
+    let step = 0;
+    let disposed = false;
+
+    const startEngine = () => {
+      if (disposed || context) return;
+      try {
+        const AudioContextClass = window.AudioContext;
+        if (!AudioContextClass) { setAvailable(false); return; }
+        context = new AudioContextClass();
+        master = context.createGain();
+        master.gain.value = 0;
+        master.connect(context.destination);
+        audioRef.current = context;
+        masterRef.current = master;
+
+        const progression = [
+          [110, 164.81, 220, 329.63],
+          [98, 146.83, 196, 293.66],
+          [130.81, 196, 261.63, 392],
+          [87.31, 130.81, 174.61, 261.63],
+        ];
+        const scheduleStep = () => {
+          if (!context || !master || context.state !== "running") return;
+          const now = context.currentTime;
+          const bar = Math.floor(step / 16) % progression.length;
+          const beat = step % 16;
+          const chord = progression[bar];
+          const note = chord[(beat * 3 + Math.floor(beat / 4)) % chord.length];
+          const isBeat = beat % 4 === 0;
+          const makeTone = (frequency: number, start: number, duration: number, volume: number, wave: OscillatorType, filterHz?: number) => {
+            if (!context || !master) return;
+            const oscillator = context.createOscillator();
+            const envelope = context.createGain();
+            oscillator.type = wave;
+            oscillator.frequency.setValueAtTime(frequency, start);
+            envelope.gain.setValueAtTime(0.0001, start);
+            envelope.gain.exponentialRampToValueAtTime(volume, start + 0.025);
+            envelope.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            if (filterHz) {
+              const filter = context.createBiquadFilter();
+              filter.type = "lowpass";
+              filter.frequency.value = filterHz;
+              oscillator.connect(filter);
+              filter.connect(envelope);
+            } else oscillator.connect(envelope);
+            envelope.connect(master);
+            oscillator.start(start);
+            oscillator.stop(start + duration + 0.03);
+          };
+          const at = now + 0.035;
+          if (isBeat) {
+            makeTone(chord[0] / 2, at, 0.32, 0.12, "sawtooth", 260);
+            makeTone(55, at, 0.22, 0.11, "sine", 120);
+          }
+          if (beat % 2 === 0) makeTone(note * 2, at, 0.13, 0.035, "triangle", 1800);
+          if (beat % 4 === 2) makeTone(note * 4, at, 0.09, 0.016, "square", 2400);
+          if (beat === 0 || beat === 8) {
+            chord.slice(1).forEach((frequency, index) => makeTone(frequency, at, 1.75, 0.018 / (index + 1), "sawtooth", 700));
+          }
+          step += 1;
+        };
+        // Quiet, original synth score. Keep the musical clock running while muted.
+        timer = window.setInterval(scheduleStep, 180);
+        timerRef.current = timer;
+        void context.resume().catch(() => setAvailable(false));
+      } catch {
+        setAvailable(false);
+      }
+    };
+
+    // Attempt silent autoplay; browsers may require the first user gesture.
+    startEngine();
+    return () => {
+      disposed = true;
+      if (timer !== null) window.clearInterval(timer);
+      timerRef.current = null;
+      masterRef.current = null;
+      audioRef.current = null;
+      if (context && context.state !== "closed") void context.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    const master = masterRef.current;
+    const context = audioRef.current;
+    if (!master || !context) return;
+    master.gain.setTargetAtTime(muted ? 0 : 0.65, context.currentTime, 0.18);
+    if (!muted && context.state === "suspended") void context.resume().catch(() => setAvailable(false));
+  }, [muted]);
+
+  const toggleAudio = () => {
+    const nextMuted = !muted;
+    setMuted(nextMuted);
+    if (!nextMuted && !audioRef.current && available) {
+      // A user gesture can unlock audio after autoplay was blocked.
+      try {
+        const AudioContextClass = window.AudioContext;
+        if (!AudioContextClass) { setAvailable(false); return; }
+        const context = new AudioContextClass();
+        const master = context.createGain();
+        master.gain.value = 0;
+        master.connect(context.destination);
+        audioRef.current = context;
+        masterRef.current = master;
+        void context.resume().then(() => {
+          if (masterRef.current === master) master.gain.setTargetAtTime(0.65, context.currentTime, 0.18);
+        }).catch(() => setAvailable(false));
+      } catch { setAvailable(false); }
+    }
+  };
+
+  return <div className="racing-bgm" role="group" aria-label="Background music controls">
+    <span className={"racing-bgm-pulse" + (muted ? "" : " is-playing")} aria-hidden="true"><i/><i/><i/><i/></span>
+    <span className="racing-bgm-copy"><strong>REDLINE RADIO</strong><small>{!available ? "AUDIO UNAVAILABLE" : muted ? "SCORE MUTED" : "CINEMATIC SCORE · LIVE"}</small></span>
+    <button type="button" className="racing-bgm-toggle" onClick={toggleAudio} aria-pressed={!muted} aria-label={muted ? "Unmute background music" : "Mute background music"} disabled={!available}>
+      <span aria-hidden="true">{muted ? "▶" : "Ⅱ"}</span>{muted ? "SOUND OFF" : "SOUND ON"}
+    </button>
+  </div>;
+}
+
 export default function App() {
   const [race, setRace] = useState<RaceState>(() => loadRace());
   const [hasSavedCareer] = useState(() => { try { return Boolean(localStorage.getItem(SAVE_KEY)); } catch { return false; } });
@@ -1437,6 +1569,7 @@ export default function App() {
         <div className="save-transfer-footnote"><span><i/> LOCAL AUTOSAVE ACTIVE</span><span>Keep your code private to your own backups; anyone with it can restore that save.</span></div>
       </section>
     </div>}
+    <RacingBgmControl />
     <footer className="footer"><span>REDLINE ASCENSION · ROGUELITE MOTORSPORTS MANAGEMENT</span><span>A GAME BY <strong>REDLINE GRID</strong></span></footer>
   </main>;
 }
