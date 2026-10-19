@@ -5081,3 +5081,22 @@ body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Redline Radio — compact motorsport BGM control */
+.racing-bgm{position:fixed;z-index:90;right:22px;bottom:20px;display:flex;align-items:center;gap:11px;min-height:56px;padding:9px 11px;background:rgba(10,12,16,.94);border:1px solid rgba(255,42,24,.42);box-shadow:0 8px 30px rgba(0,0,0,.35);backdrop-filter:blur(14px);color:#f4f5f7}
+.racing-bgm-pulse{width:25px;height:25px;display:flex;align-items:center;justify-content:center;gap:2px;border-left:2px solid var(--red);padding-left:5px}
+.racing-bgm-pulse i{display:block;width:3px;height:7px;background:var(--red);opacity:.7}
+.racing-bgm-pulse i:nth-child(2){height:14px}.racing-bgm-pulse i:nth-child(3){height:10px}.racing-bgm-pulse i:nth-child(4){height:17px}
+.racing-bgm-pulse.is-playing i{animation:racing-radio-wave .65s ease-in-out infinite alternate}
+.racing-bgm-pulse.is-playing i:nth-child(2){animation-delay:.15s}.racing-bgm-pulse.is-playing i:nth-child(3){animation-delay:.3s}.racing-bgm-pulse.is-playing i:nth-child(4){animation-delay:.08s}
+.racing-bgm-copy{display:flex;flex-direction:column;gap:4px;min-width:100px}
+.racing-bgm-copy strong{font:700 10px var(--display);letter-spacing:1.3px}
+.racing-bgm-copy small{font:8px var(--mono);letter-spacing:.65px;color:#989eaa}
+.racing-bgm-toggle{display:flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:0 10px;background:#171a20;border:1px solid #363b45;color:#f3f4f6;font:600 8px var(--mono);letter-spacing:.6px;white-space:nowrap}
+.racing-bgm-toggle:hover:not(:disabled){border-color:var(--red);background:#231515}
+.racing-bgm-toggle span{color:var(--red);font-size:11px}
+.racing-bgm-toggle:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@keyframes racing-radio-wave{from{transform:scaleY(.45);opacity:.55}to{transform:scaleY(1);opacity:1}}
+@media(max-width:600px){.racing-bgm{right:10px;bottom:calc(168px + env(safe-area-inset-bottom));min-height:48px;gap:8px;padding:7px 8px}.racing-bgm-copy{min-width:82px}.racing-bgm-copy strong{font-size:9px}.racing-bgm-copy small{font-size:7px}.racing-bgm-toggle{min-height:31px;padding:0 8px;font-size:7px}}
+@media(prefers-reduced-motion:reduce){.racing-bgm-pulse.is-playing i{animation:none}}
