@@ -838,7 +838,6 @@ function RacingBgmControl() {
   const audioRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
   const timerRef = useRef<number | null>(null);
-  const stepRef = useRef(0);
   const [muted, setMuted] = useState(true);
   const [available, setAvailable] = useState(true);
 
