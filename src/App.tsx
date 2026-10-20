@@ -1444,24 +1444,7 @@ export default function App() {
             </article>;
           })}</div>
         </section>
-      {(race.mode ?? "championship") === "championship" && <section className="panel championship-achievements-panel" aria-label="Championship achievements">
-        <div className="panel-heading"><div><div className="section-kicker">SEASON PROGRESSION</div><h2>Championship achievements</h2></div><span className="field-count">{(race.championshipAchievements ?? []).length}/{CHAMPIONSHIP_ACHIEVEMENTS.length} UNLOCKED</span></div>
-        <div className="achievement-progress-track"><i style={{ width: (((race.championshipAchievements ?? []).length / CHAMPIONSHIP_ACHIEVEMENTS.length) * 100) + "%" }}/></div>
-        <div className="achievement-grid">{CHAMPIONSHIP_ACHIEVEMENTS.map((achievement) => {
-          const unlocked = (race.championshipAchievements ?? []).includes(achievement.id);
-          const results = race.championshipRaceResults ?? [];
-          const pointsFinishes = results.filter((result) => result.position > 0 && result.position <= 10).length;
-          const lastThree = results.slice(-3);
-          const streakProgress = unlocked ? 3 : lastThree.length === 3 && lastThree.every((result) => result.position <= 10) ? 3 : lastThree.slice(-2).filter((result) => result.position <= 10).length;
-          const points = race.teamPoints?.[playerTeamName] ?? 0;
-          const progress = achievement.id === "five-points-finishes" ? Math.min(5, pointsFinishes) : achievement.id === "three-points-streak" ? streakProgress : achievement.id === "century-club" ? Math.min(100, points) : achievement.id === "top-three-season" ? (unlocked ? 20 : Math.min(19, race.weekendNumber - 1)) : achievement.id === "world-champion" ? (unlocked ? 1 : 0) : (unlocked || results.some((result) => achievement.id === "first-points" ? result.position <= 10 : achievement.id === "first-podium" ? result.position <= 3 : result.position === 1) ? 1 : 0);
-          const target = achievement.id === "five-points-finishes" ? 5 : achievement.id === "three-points-streak" ? 3 : achievement.id === "century-club" ? 100 : achievement.id === "top-three-season" ? 20 : 1;
-          const progressLabel = achievement.id === "century-club" ? progress + " / 100 PTS" : achievement.id === "five-points-finishes" ? progress + " / 5 FINISHES" : achievement.id === "three-points-streak" ? progress + " / 3 ROUNDS" : achievement.id === "top-three-season" ? (unlocked ? "SEASON COMPLETE" : Math.max(0, race.weekendNumber - 1) + " / 20 ROUNDS") : achievement.id === "world-champion" ? (unlocked ? "CHAMPION" : "SEASON TARGET") : (unlocked ? "COMPLETED" : "LOCKED");
-          const bar = unlocked ? 100 : achievement.id === "century-club" ? progress : achievement.id === "five-points-finishes" || achievement.id === "three-points-streak" ? progress / target * 100 : achievement.id === "top-three-season" ? progress / target * 100 : 0;
-          return <article className={"achievement-card" + (unlocked ? " achievement-unlocked" : "")} key={achievement.id}><div className="achievement-card-top"><span>{unlocked ? "✓ UNLOCKED" : "ACHIEVEMENT"}</span><b>RM{achievement.cashReward.toLocaleString("en-MY")}</b></div><h3>{achievement.title}</h3><p>{achievement.description}</p><div className="achievement-card-progress"><span>{progressLabel}</span><small>+{achievement.researchReward} RP</small></div><div className="achievement-card-track"><i style={{ width: bar + "%" }}/></div></article>;
-        })}</div>
-        {(race.latestChampionshipAchievements ?? []).length > 0 && <div className="achievement-unlock-feed">{(race.latestChampionshipAchievements ?? []).map((achievement) => <div key={achievement.id}><strong>★ {achievement.title}</strong><span>{achievement.detail} · +RM{achievement.cashReward.toLocaleString("en-MY")} · +{achievement.researchReward} RP</span></div>)}</div>}
-      </section>}
+      
       </div>
       <div className="content-column right-column">
       {(race.safetyCarActive || (race.incidentCount ?? 0) > 0) && <section className={"race-control-alert" + (race.safetyCarActive ? " safety-car-alert" : "")} role="status"><span>{race.safetyCarActive ? "SC" : "!"}</span><div><strong>{race.safetyCarActive ? "SAFETY CAR DEPLOYED" : "RACE CONTROL · INCIDENTS"}</strong><p>{race.safetyCarActive ? "Field neutralised. Tyre wear and fuel consumption are reduced; consider pitting if the stop loss is favourable." : (race.incidentCount ?? 0) + " incident(s) reported this race. Monitor component condition and traffic."}</p></div></section>}
@@ -1483,6 +1466,25 @@ export default function App() {
         </div>
         <div className="standings-foot"><span><i className="dot red"/> {playerTeamName.toUpperCase()}</span><span>POSITION UPDATES LIVE</span></div>
       </section>
+
+      {(race.mode ?? "championship") === "championship" && <section className="panel championship-achievements-panel" aria-label="Championship achievements">
+        <div className="panel-heading"><div><div className="section-kicker">SEASON PROGRESSION</div><h2>Championship achievements</h2></div><span className="field-count">{(race.championshipAchievements ?? []).length}/{CHAMPIONSHIP_ACHIEVEMENTS.length} UNLOCKED</span></div>
+        <div className="achievement-progress-track"><i style={{ width: (((race.championshipAchievements ?? []).length / CHAMPIONSHIP_ACHIEVEMENTS.length) * 100) + "%" }}/></div>
+        <div className="achievement-grid">{CHAMPIONSHIP_ACHIEVEMENTS.map((achievement) => {
+          const unlocked = (race.championshipAchievements ?? []).includes(achievement.id);
+          const results = race.championshipRaceResults ?? [];
+          const pointsFinishes = results.filter((result) => result.position > 0 && result.position <= 10).length;
+          const lastThree = results.slice(-3);
+          const streakProgress = unlocked ? 3 : lastThree.length === 3 && lastThree.every((result) => result.position <= 10) ? 3 : lastThree.slice(-2).filter((result) => result.position <= 10).length;
+          const points = race.teamPoints?.[playerTeamName] ?? 0;
+          const progress = achievement.id === "five-points-finishes" ? Math.min(5, pointsFinishes) : achievement.id === "three-points-streak" ? streakProgress : achievement.id === "century-club" ? Math.min(100, points) : achievement.id === "top-three-season" ? (unlocked ? 20 : Math.min(19, race.weekendNumber - 1)) : achievement.id === "world-champion" ? (unlocked ? 1 : 0) : (unlocked || results.some((result) => achievement.id === "first-points" ? result.position <= 10 : achievement.id === "first-podium" ? result.position <= 3 : result.position === 1) ? 1 : 0);
+          const target = achievement.id === "five-points-finishes" ? 5 : achievement.id === "three-points-streak" ? 3 : achievement.id === "century-club" ? 100 : achievement.id === "top-three-season" ? 20 : 1;
+          const progressLabel = achievement.id === "century-club" ? progress + " / 100 PTS" : achievement.id === "five-points-finishes" ? progress + " / 5 FINISHES" : achievement.id === "three-points-streak" ? progress + " / 3 ROUNDS" : achievement.id === "top-three-season" ? (unlocked ? "SEASON COMPLETE" : Math.max(0, race.weekendNumber - 1) + " / 20 ROUNDS") : achievement.id === "world-champion" ? (unlocked ? "CHAMPION" : "SEASON TARGET") : (unlocked ? "COMPLETED" : "LOCKED");
+          const bar = unlocked ? 100 : achievement.id === "century-club" ? progress : achievement.id === "five-points-finishes" || achievement.id === "three-points-streak" ? progress / target * 100 : achievement.id === "top-three-season" ? progress / target * 100 : 0;
+          return <article className={"achievement-card" + (unlocked ? " achievement-unlocked" : "")} key={achievement.id}><div className="achievement-card-top"><span>{unlocked ? "✓ UNLOCKED" : "ACHIEVEMENT"}</span><b>RM{achievement.cashReward.toLocaleString("en-MY")}</b></div><h3>{achievement.title}</h3><p>{achievement.description}</p><div className="achievement-card-progress"><span>{progressLabel}</span><small>+{achievement.researchReward} RP</small></div><div className="achievement-card-track"><i style={{ width: bar + "%" }}/></div></article>;
+        })}</div>
+        {(race.latestChampionshipAchievements ?? []).length > 0 && <div className="achievement-unlock-feed">{(race.latestChampionshipAchievements ?? []).map((achievement) => <div key={achievement.id}><strong>★ {achievement.title}</strong><span>{achievement.detail} · +RM{achievement.cashReward.toLocaleString("en-MY")} · +{achievement.researchReward} RP</span></div>)}</div>}
+      </section>}
 
       </div>
       {race.status === "finished" && <section className="panel upgrade-panel roguelite-panel">
