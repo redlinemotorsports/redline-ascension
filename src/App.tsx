@@ -860,11 +860,12 @@ function RacingBgmControl() {
         audioRef.current = context;
         masterRef.current = master;
 
+        // Original retrowave progression: warm minor-key chords, pulsing bass and bright arpeggios.
         const progression = [
-          [110, 164.81, 220, 329.63],
-          [98, 146.83, 196, 293.66],
-          [130.81, 196, 261.63, 392],
-          [87.31, 130.81, 174.61, 261.63],
+          [110, 130.81, 164.81, 196],
+          [87.31, 103.83, 130.81, 164.81],
+          [130.81, 155.56, 196, 233.08],
+          [98, 116.54, 146.83, 174.61],
         ];
         const scheduleStep = () => {
           if (!context || !master || context.state !== "running") return;
@@ -872,8 +873,8 @@ function RacingBgmControl() {
           const bar = Math.floor(step / 16) % progression.length;
           const beat = step % 16;
           const chord = progression[bar];
-          const note = chord[(beat * 3 + Math.floor(beat / 4)) % chord.length];
-          const isBeat = beat % 4 === 0;
+          const arpPattern = [0, 2, 1, 3, 2, 1, 3, 2, 0, 2, 1, 3, 2, 1, 2, 3];
+          const note = chord[arpPattern[beat]];
           const makeTone = (frequency: number, start: number, duration: number, volume: number, wave: OscillatorType, filterHz?: number) => {
             if (!context || !master) return;
             const oscillator = context.createOscillator();
@@ -881,12 +882,13 @@ function RacingBgmControl() {
             oscillator.type = wave;
             oscillator.frequency.setValueAtTime(frequency, start);
             envelope.gain.setValueAtTime(0.0001, start);
-            envelope.gain.exponentialRampToValueAtTime(volume, start + 0.025);
+            envelope.gain.exponentialRampToValueAtTime(volume, start + 0.018);
             envelope.gain.exponentialRampToValueAtTime(0.0001, start + duration);
             if (filterHz) {
               const filter = context.createBiquadFilter();
               filter.type = "lowpass";
-              filter.frequency.value = filterHz;
+              filter.frequency.setValueAtTime(filterHz, start);
+              filter.frequency.linearRampToValueAtTime(filterHz * 0.72, start + duration);
               oscillator.connect(filter);
               filter.connect(envelope);
             } else oscillator.connect(envelope);
@@ -894,20 +896,20 @@ function RacingBgmControl() {
             oscillator.start(start);
             oscillator.stop(start + duration + 0.03);
           };
-          const at = now + 0.035;
-          if (isBeat) {
-            makeTone(chord[0] / 2, at, 0.32, 0.12, "sawtooth", 260);
-            makeTone(55, at, 0.22, 0.11, "sine", 120);
+          const at = now + 0.025;
+          if (beat % 4 === 0) {
+            makeTone(chord[0] / 2, at, 0.28, 0.17, "sawtooth", 320);
+            makeTone(chord[0] / 4, at, 0.19, 0.16, "sine", 140);
           }
-          if (beat % 2 === 0) makeTone(note * 2, at, 0.13, 0.035, "triangle", 1800);
-          if (beat % 4 === 2) makeTone(note * 4, at, 0.09, 0.016, "square", 2400);
+          makeTone(note * 2, at, 0.105, 0.052, "triangle", 2400);
+          if (beat % 4 === 2) makeTone(note * 4, at, 0.075, 0.022, "square", 3200);
           if (beat === 0 || beat === 8) {
-            chord.slice(1).forEach((frequency, index) => makeTone(frequency, at, 1.75, 0.018 / (index + 1), "sawtooth", 700));
+            chord.slice(1).forEach((frequency, index) => makeTone(frequency, at, 0.92, 0.027 / (index + 1), "sawtooth", 1100));
           }
           step += 1;
         };
-        // Quiet, original synth score. Keep the musical clock running while muted.
-        timer = window.setInterval(scheduleStep, 180);
+        // 16th notes at ~100 BPM; keep the synth clock running while muted.
+        timer = window.setInterval(scheduleStep, 150);
         timerRef.current = timer;
         void context.resume().catch(() => setAvailable(false));
       } catch {
@@ -958,7 +960,7 @@ function RacingBgmControl() {
 
   return <div className="racing-bgm" role="group" aria-label="Background music controls">
     <span className={"racing-bgm-pulse" + (muted ? "" : " is-playing")} aria-hidden="true"><i/><i/><i/><i/></span>
-    <span className="racing-bgm-copy"><strong>REDLINE RADIO</strong><small>{!available ? "AUDIO UNAVAILABLE" : muted ? "SCORE MUTED" : "CINEMATIC SCORE · LIVE"}</small></span>
+    <span className="racing-bgm-copy"><strong>REDLINE RADIO</strong><small>{!available ? "AUDIO UNAVAILABLE" : muted ? "SYNTHWAVE · MUTED" : "RETROWAVE · LIVE"}</small></span>
     <button type="button" className="racing-bgm-toggle" onClick={toggleAudio} aria-pressed={!muted} aria-label={muted ? "Unmute background music" : "Mute background music"} disabled={!available}>
       <span aria-hidden="true">{muted ? "▶" : "Ⅱ"}</span>{muted ? "SOUND OFF" : "SOUND ON"}
     </button>
